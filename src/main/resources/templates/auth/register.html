@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #f5f5f5;
+            padding-top: 40px;
+            padding-bottom: 40px;
+        }
+        
+        .register-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        
+        .invalid-feedback {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="register-container">
+            <!-- Card de registro -->
+            <div class="card shadow">
+                <div class="card-header bg-success text-white text-center py-3">
+                    <h4 class="mb-0">Crear Cuenta</h4>
+                </div>
+                
+                <div class="card-body p-4">
+                    <!-- Alertas -->
+                    <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
+                    
+                    <!-- Formulario de registro -->
+                    <form th:action="@{/web/register}" method="post" th:object="${registerForm}" id="registerForm">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Nombre</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       th:field="*{nombre}"
+                                       th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid' : ''"
+                                       required>
+                                <div th:if="${#fields.hasErrors('nombre')}" class="invalid-feedback" th:errors="*{nombre}"></div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label">Apellido</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       th:field="*{apellido}"
+                                       th:classappend="${#fields.hasErrors('apellido')} ? 'is-invalid' : ''"
+                                       required>
+                                <div th:if="${#fields.hasErrors('apellido')}" class="invalid-feedback" th:errors="*{apellido}"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Nombre de usuario</label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   th:field="*{username}"
+                                   th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : ''"
+                                   required>
+                            <div th:if="${#fields.hasErrors('username')}" class="invalid-feedback" th:errors="*{username}"></div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" 
+                                   class="form-control" 
+                                   th:field="*{email}"
+                                   th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                                   required>
+                            <div th:if="${#fields.hasErrors('email')}" class="invalid-feedback" th:errors="*{email}"></div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Contraseña</label>
+                            <input type="password" 
+                                   class="form-control" 
+                                   th:field="*{password}"
+                                   th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
+                                   id="password"
+                                   required>
+                            <div th:if="${#fields.hasErrors('password')}" class="invalid-feedback" th:errors="*{password}"></div>
+                            <div class="form-text">Mínimo 6 caracteres</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Confirmar contraseña</label>
+                            <input type="password" 
+                                   class="form-control" 
+                                   th:field="*{confirmPassword}"
+                                   th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid' : ''"
+                                   id="confirmPassword"
+                                   required>
+                            <div th:if="${#fields.hasErrors('confirmPassword')}" class="invalid-feedback" th:errors="*{confirmPassword}"></div>
+                            <div class="form-text" id="passwordMatch">Las contraseñas deben coincidir</div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success w-100">
+                            Crear Cuenta
+                        </button>
+                    </form>
+                    
+                    <hr>
+                    <div class="text-center">
+                        <a th:href="@{/web/login}" class="text-decoration-none">
+                            ¿Ya tienes una cuenta? Inicia sesión aquí
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Validación simple de contraseñas
+        document.addEventListener('DOMContentLoaded', function() {
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+            const passwordMatch = document.getElementById('passwordMatch');
+            
+            function validatePasswords() {
+                if (confirmPassword.value && password.value === confirmPassword.value) {
+                    passwordMatch.className = 'form-text text-success';
+                    passwordMatch.textContent = 'Las contraseñas coinciden';
+                } else if (confirmPassword.value) {
+                    passwordMatch.className = 'form-text text-danger';
+                    passwordMatch.textContent = 'Las contraseñas no coinciden';
+                }
+            }
+            
+            password.addEventListener('input', validatePasswords);
+            confirmPassword.addEventListener('input', validatePasswords);
+        });
+    </script>
+</body>
+</html>

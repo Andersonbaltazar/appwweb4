@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo} ?: 'Sistema Comercial'">Sistema Comercial</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .main-content { padding-top: 70px; min-height: calc(100vh - 60px); }
+        .navbar { background-color: #0d6efd; }
+    </style>
+</head>
+<body>
+    <!-- Navbar simplificada -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/web/dashboard}">Sistema Comercial</a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a class="nav-link" th:href="@{/web/dashboard}">Dashboard</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a class="nav-link" th:href="@{/productos}">Productos</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a class="nav-link" th:href="@{/categorias}">Categorías</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                        <a class="nav-link" th:href="@{/swagger-ui.html}">API Docs</a>
+                    </li>
+                </ul>
+                
+                <!-- Usuario y autenticación -->
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <span th:text="${#authentication.principal.nombre}">Usuario</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <form th:action="@{/web/logout}" method="post">
+                                    <button type="submit" class="dropdown-item">Cerrar Sesión</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link" th:href="@{/web/login}">Iniciar Sesión</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link" th:href="@{/web/register}">Registrarse</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Alertas simplificadas -->
+            <div th:if="${successMessage}" class="alert alert-success" role="alert" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
+            <div th:if="${infoMessage}" class="alert alert-info" role="alert" th:text="${infoMessage}"></div>
+            
+            <!-- Contenido de la página -->
+            <div layout:fragment="content">
+                <!-- El contenido específico de cada página se insertará aquí -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer simplificado -->
+    <footer class="bg-light py-3 mt-3">
+        <div class="container text-center">
+            <p class="mb-0">Sistema Comercial - Desarrollado con Spring Boot</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script layout:fragment="scripts"></script>
+</body>
+</html>
